@@ -1,11 +1,12 @@
 [build]
-  # Esta línea es crucial para que Netlify compile tu juego
-  command = "cd Game/keepYourSheep && npm install && npm run build"
-  # Indica a Netlify que busque los archivos finales aquí
-  publish = "Game/keepYourSheep/build"
+  publish = "." 
   functions = "netlify/functions"
 
 [[redirects]]
   from = "/juego/*"
-  to = "/:splat"
+  to = "/Game/keepYourSheep/:splat"
+<<<<<<< HEAD
   status = 200
+=======
+  status = 200
+>>>>>>> 8567cb14bad72124bf84c2d0b463daf30dc05697
