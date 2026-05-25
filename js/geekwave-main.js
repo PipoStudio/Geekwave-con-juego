@@ -39,3 +39,32 @@ function syncGeekwaveCart() {
 
 document.addEventListener('DOMContentLoaded', syncGeekwaveCart);
 window.addEventListener('storage', syncGeekwaveCart);
+
+
+// js/geekwave-main.js
+
+async function registrarPartidaDiaria() {
+    // 1. Obtenemos el usuario actual de Supabase
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+        alert("¡Inicia sesión para ganar puntos de racha!");
+        return;
+    }
+
+    // 2. Llamamos a la función SQL que creamos antes
+    const { data, error } = await supabase.rpc('registrar_partida_y_actualizar_racha', {
+        user_id_param: user.id
+    });
+
+    if (error) {
+        console.error("Error al registrar racha:", error);
+        return;
+    }
+
+    // 3. Si la función nos devuelve un tipo de premio, disparar el correo
+    const tipoPremio = data[0].enviar_correo_tipo;
+    if (tipoPremio !== 'NINGUNO') {
+        notificarAEmail(user.email, tipoPremio);
+    }
+}
