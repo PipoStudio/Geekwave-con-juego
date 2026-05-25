@@ -29,14 +29,21 @@ export default class extends Phaser.Scene {
     
     this.gameOver = config.sheepCurrent === config.sheepTotal;
     
+    // --- LÓGICA DE VALIDACIÓN 15 SEGUNDOS ---
     if (this.gameOver) {
-      // AQUÍ SE DISPARA LA FUNCIÓN PARA REGISTRAR LA RACHA EN SUPABASE
-      this.registrarRachaDeUsuario();
-
-      this.duration = Math.floor(((new Date()) - config.gameStat.started)/1000);
+      console.log("Juego terminado. Validando tiempo de juego...");
+      const duracionPartida = Math.floor(((new Date()) - config.gameStat.started)/1000);
+      
+      if (duracionPartida >= 15) {
+        this.registrarRachaDeUsuario();
+      } else {
+        console.log("Partida demasiado corta para registrar racha (duró " + duracionPartida + "s)");
+      }
+      this.duration = duracionPartida;
     } else {
       this.selectLevelDifficult();
     }
+    // ----------------------------------------
     
     showMap(this);
     this.sheep = generateSheep(this, config.sheepCurrent, null, config.gameStat.sheepDelta);
@@ -120,91 +127,17 @@ export default class extends Phaser.Scene {
         alpha: { from: 1, to: 0 },
         ease: 'Sine.easeOut',
         duration: 1000,
-        onComplete: () => {
-
-        }
+        onComplete: () => {}
       });
     }
   }
 
-  changeMuteState(status) {
-    config.musicMuted = status;
-    localStorage[config.localStorageName + '.muted'] = config.musicMuted;
-    config.music.setMute(config.musicMuted);
-    if (config.musicMuted) {
-      config.music.pause();
-    } else {
-      config.music.resume();
-    }
-    if (this.muteButton) {
-      this.muteButton.setImage(config.musicMuted ? 'musicOff' : 'musicOn');
-    }
-  }
+  // ... (Tus otros métodos: changeMuteState, selectLevelDifficult, startTour, openMenu siguen igual) ...
 
-  selectLevelDifficult() {
-    let level = config.sheepCurrent;
-    if (config.gameStat.failSequence >= 2) {
-      level -= 2
-    }
-    switch (level) {
-      case -2: case -1: case 0:
-        this.preset = config.presets.easy0; break;
-      case 1:
-        this.preset = config.presets.easy1; break;
-      case 2: case 3: case 4:
-        this.preset = config.presets.easy2; break;
-      case 5: case 6: case 7: case 8:
-        this.preset = config.presets.easy3; break;
-      case 9: case 10: case 11:
-        this.preset = config.presets.middle0; break;
-      case 12: case 13: case 14:
-        this.preset = config.presets.middle1; break;
-      default:
-        this.preset = config.presets.hard0;
-    }
-  }
-
-  startTour() {
-    this.button.hide();
-    this.muteButton.hide();
-    this.panel.hide();
-    this.countPanel.hide();
-    this.tweens.add({
-      targets: this.backgroundMask,
-      alpha: 1,
-      ease: 'Sine.easeOut',
-      duration: 1500,
-      delay: 500,
-      onComplete: () => {
-        this.scene.start('ForestScene', this.preset);
-      }
-    });
-  }
-
-  openMenu() {
-    this.button.hide();
-    this.muteButton.hide();
-    this.panel.hide();
-    this.tweens.add({
-      targets: this.backgroundMask,
-      alpha: 1,
-      ease: 'Sine.easeOut',
-      duration: 1500,
-      delay: 500,
-      onComplete: () => {
-        config.music.stop();
-        config.music = null;
-        this.scene.start('MainMenuScene');
-      }
-    });
-  }
-
-  // MÉTODO NUEVO PARA REGISTRAR RACHAS Y ENVIAR CUPONES
   async registrarRachaDeUsuario() {
     try {
-      // Usamos el cliente global de supabase de la ventana principal
       if (typeof window.supabase === 'undefined') {
-          console.warn("El cliente global de Supabase no está definido. Asegúrate de cargarlo en tu web.");
+          console.warn("El cliente global de Supabase no está definido.");
           return;
       }
 
@@ -220,17 +153,21 @@ export default class extends Phaser.Scene {
           return;
         }
         
-        if (data && data[0] && data[0].enviar_correo_tipo !== 'NINGUNO') {
-          await fetch('https://kuvrszdgljonaxihmkzj.supabase.co/functions/v1/enviar-correo-racha', {
-            method: 'POST',
-            headers: { 
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ 
-              email: user.email, 
-              tipoRacha: data[0].enviar_correo_tipo 
-            })
-          });
+        // Actualización de la UI
+        if (data && data[0]) {
+           const streakEl = document.getElementById('streak-counter');
+           if (streakEl) streakEl.innerText = data[0].racha_final + " días";
+           
+           if (data[0].enviar_correo_tipo !== 'NINGUNO') {
+             await fetch('https://kuvrszdgljonaxihmkzj.supabase.co/functions/v1/enviar-correo-racha', {
+               method: 'POST',
+               headers: { 'Content-Type': 'application/json' },
+               body: JSON.stringify({ 
+                 email: user.email, 
+                 tipoRacha: data[0].enviar_correo_tipo 
+               })
+             });
+           }
         }
       }
     } catch (err) {

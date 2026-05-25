@@ -1,15 +1,8 @@
 [build]
-  publish = "."
+  publish = "." 
   functions = "netlify/functions"
 
-# Si quieres que el juego se acceda desde /juego/
 [[redirects]]
   from = "/juego/*"
   to = "/Game/keepYourSheep/:splat"
   status = 200
-
-[build]
-  publish = "." # O la carpeta que contenga tus archivos HTML
-  functions = "netlify/functions/" # <-- ¡Asegúrate de que esto coincida con el nombre de tu carpeta!
-  
-  
