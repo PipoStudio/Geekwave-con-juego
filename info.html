@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geekwave | High-End Retro Tech</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;700&family=Space+Grotesk:wght@400;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <link rel="stylesheet" href="https://unpkg.com/lenis@1.1.18/dist/lenis.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/info.css">
+</head>
+<body>
+<nav class="navbar navbar-glass">
+        
+ <a href="index.html" class="logo">
+    <i data-lucide="circle"></i> GEEKWAVE
+</a>
+
+        
+        <div class="nav-links" id="navLinks">
+            <a href="index.html" class="active">Home</a>
+            <div class="nav-item-dropdown">
+                <a href="#" id="productosBtn">Productos <i data-lucide="chevron-down" style="width: 14px; vertical-align: middle;"></i></a>
+                
+                <div class="mega-menu" id="productosMenu" data-lenis-prevent>
+                    <div class="menu-container">
+                        <div class="menu-col" id="col-categories">
+                            <span class="menu-label">Categoría</span>
+                            <ul class="menu-list" id="list-categories"></ul>
+                        </div>
+                        <div class="menu-col hidden" id="col-subcategories">
+                            <span class="menu-label">Plataforma / Tipo</span>
+                            <ul class="menu-list" id="list-subcategories"></ul>
+                        </div>
+                        <div class="menu-col hidden" id="col-products">
+                            <span class="menu-label">Productos disponibles</span>
+                            <ul class="menu-list" id="list-products"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+       
+            <a href="ofertas.html">Ofertas</a>
+            <a href="contacto.html">Contacto</a>
+            <a href="soporte.html">Soporte</a>
+        </div>
+        
+        <div class="nav-icons">
+            <div class="search-container" id="searchContainer">
+                <input type="text" id="searchInput" class="search-input" placeholder="Buscar retro-tech, consolas...">
+                <button class="icon-btn filter-btn" id="filterBtn" title="Filtros">
+                    <i data-lucide="sliders-horizontal"></i>
+                </button>
+                <button class="icon-btn search-btn" id="searchBtn"><i data-lucide="search"></i></button>
+                
+                <div class="filter-panel" id="filterPanel" onclick="event.stopPropagation();">
+                    <div class="filter-header">Filtros de Búsqueda</div>
+                    <div class="filter-group">
+                        <label>Categoría</label>
+                        <select id="filterCategory">
+                            
+                            <option value="Todo" selected>Todo</option>
+                            <option value="Consolas">Consolas</option>
+                            <option value="Juegos">Juegos</option>
+                            <option value="Accesorios">Accesorios</option>
+                            <option value="Preventas">Preventas</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Precio</label>
+                        <select id="filterPrice">
+                            <option value="all" selected>Cualquier precio</option>
+                            <option value="under50">Menos de $50</option>
+                            <option value="50to150">De $50 a $150</option>
+                            <option value="over150">Más de $150</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Ordenar por</label>
+                        <select id="filterSort">
+                            <option value="relevance" selected>Relevancia</option>
+                            <option value="az">Nombre (A - Z)</option>
+                            <option value="priceAsc">Precio: Menor a Mayor</option>
+                            <option value="priceDesc">Precio: Mayor a Menor</option>
+                            <option value="newest">Más recientes (Año)</option>
+                        </select>
+                    </div>
+                    <button id="applyFiltersBtn" class="btn-primary" style="width: 100%; padding: 0.8rem; margin-top: 10px; font-size: 0.85rem; border: none; border-radius: 8px;">Aplicar Filtros</button>
+                </div>
+                <div class="search-results" id="searchResults" data-lenis-prevent></div>
+            </div>
+
+            <div class="user-nav-container" style="position: relative; display: inline-flex;">
+                <button class="icon-btn" id="userBtn" onclick="window.location.href='login.html'">
+                    <i data-lucide="user"></i>
+                </button>
+                <span class="user-badge" id="userBadge"></span>
+                <div class="user-tooltip" id="userTooltip">Inicia sesión para finalizar tu orden</div>
+            </div>
+
+
+
+           <div class="cart-nav-container" style="position: relative; display: inline-flex;">
+                <button class="icon-btn" id="cartBtn"><i data-lucide="shopping-bag"></i></button>
+                <span class="cart-badge" id="cartBadge">0</span>
+                
+                <div class="cart-dropdown" id="cartDropdown" onclick="event.stopPropagation();">
+                    <div class="cart-header">
+                        <h3>Tu Carrito</h3>
+                        <button class="close-cart" id="closeCartBtn"><i data-lucide="x"></i></button>
+                    </div>
+                    
+                    <div class="cart-items" id="cartItemsContainer" data-lenis-prevent>
+                        </div>
+                    
+                   <div class="cart-footer">
+                        <button onclick="window.location.href='pago.html'" class="btn-primary" style="width: 100%; padding: 12px; margin-bottom: 10px; border: none; font-size: 0.9rem;">Ir a pagar</button>
+                        <button id="saveCartBtn" class="btn-outline" style="width: 100%; padding: 12px; font-size: 0.9rem; text-align: center;">Guardar</button>
+                    </div>
+                    <div id="toastMsg" class="toast-msg">Eliminado</div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div id="toastMsg" class="toast-msg">Eliminado</div>
+        </div>
+    </nav>
+<!-- ================= CONTENIDO ================= -->
+<section class="product-page">
+
+  <!-- Galería -->
+  <div class="gallery-thumbs" id="galleryThumbs"></div>
+
+  <!-- Imagen principal -->
+  <div class="main-image">
+    <img id="mainProductImage" src="" alt="Analogue Pocket">
+  </div>
+
+  <!-- Detalles -->
+  <div class="product-details">
+
+    <div class="badge">
+      <i class="fa-solid fa-microchip"></i>
+      SISTEMA FPGA NATIVO
+    </div>
+
+    <h1 id="productTitle">Analogue Pocket</h1>
+
+    <div class="reviews-row">
+      <div class="stars">★★★★★</div>
+      <span>High-End Enthusiast Grade</span>
+      <span>|</span>
+      <span>Lanzamiento: <strong>2021</strong></span>
+    </div>
+
+    <p class="description" id="productDescription">
+      Sistema portátil basado en tecnología FPGA (Field Programmable Gate Array). No utiliza emulación por software; replica el hardware original a nivel de transistores.
+    </p>
+
+    <!-- Variantes -->
+    <div class="flavor-section">
+      <h3>Selecciona el acabado del chasis:</h3>
+      <div class="flavors" id="flavorContainer"></div>
+    </div>
+
+    <!-- Compra -->
+    <div class="purchase-box">
+
+      <div class="plans">
+        <div class="plan active" data-plan="standard">
+          <span class="popular">MÁS BUSCADO</span>
+          <h4>EDICIÓN BASE</h4>
+          <div class="price" id="basePrice">$219.99</div>
+          <p>Consola Analogue Pocket</p>
+        </div>
+
+        <div class="plan" data-plan="bundle">
+          <h4>DELUXE BUNDLE</h4>
+          <div class="price" id="bundlePrice">$299.99</div>
+          <p>Consola + Dock HDMI</p>
+        </div>
+      </div>
+
+      <ul class="benefits" id="benefitsList">
+        <li><i class="fa-solid fa-circle-check"></i> Ejecución nativa sin lag</li>
+        <li><i class="fa-solid fa-circle-check"></i> Pantalla de grado profesional</li>
+        <li><i class="fa-solid fa-circle-check"></i> Garantía limitada Geekwave</li>
+      </ul>
+
+      <div class="purchase-footer">
+        <div class="quantity-selector">
+          <button class="qty-btn" id="decreaseQty">−</button>
+          <span id="quantityValue">1</span>
+          <button class="qty-btn" id="increaseQty">+</button>
+        </div>
+
+        <button class="cart-btn" id="cartButton">
+          AÑADIR AL CARRITO
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Iconos -->
+    <div class="trust-icons">
+      <div class="trust-item">
+        <i class="fa-solid fa-expand"></i>
+        <p><strong>1600x1440</strong><br>615 ppi LCD</p>
+      </div>
+
+      <div class="trust-item">
+        <i class="fa-solid fa-battery-three-quarters"></i>
+        <p><strong>4300mAh</strong><br>6-10 horas</p>
+      </div>
+
+      <div class="trust-item">
+        <i class="fa-solid fa-layer-group"></i>
+        <p><strong>FPGA Dual</strong><br>Cyclone V & IV</p>
+      </div>
+    </div>
+
+    <!-- Accordion -->
+    <div class="accordion">
+
+      <div class="accordion-item">
+        <div class="accordion-header">
+          Arquitectura del Hardware
+          <i class="fa-solid fa-plus"></i>
+        </div>
+        <div class="accordion-content">
+          Equipado con dos chips FPGA (Altera Cyclone V y Cyclone IV) que permiten recreación exacta del hardware clásico.
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <div class="accordion-header">
+          Dimensiones y Ergonomía
+          <i class="fa-solid fa-plus"></i>
+        </div>
+        <div class="accordion-content">
+          149 x 88 x 22 mm con materiales premium de alta durabilidad.
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- =========================  SUGERENCIAS ========================= -->
+<section class="suggestions-container">
+
+  <h2 class="suggestions-title">Productos Complementarios</h2>
+
+  <div class="suggestions-grid">
+
+    <div class="sugg-card">
+      <div class="sugg-img">
+        <img src="https://res.cloudinary.com/dn8pns203/image/upload/v1777401927/geekwave_catalog/bjsbzsjfrnypgai8najy.webp">
+        <div class="sugg-overlay">
+          <button class="sugg-btn-cart">
+            <i class="fa-solid fa-cart-plus"></i>
+          </button>
+        </div>
+      </div>
+      <div class="sugg-content">
+        <span class="sugg-tag">Accesorio</span>
+        <h3>Analogue Dock</h3>
+        <p class="sugg-price">$99.99</p>
+        <a href="#" class="sugg-btn-more">VER DETALLES</a>
+      </div>
+    </div>
+
+    <div class="sugg-card">
+      <div class="sugg-img">
+        <img src="https://res.cloudinary.com/dn8pns203/image/upload/v1777401876/geekwave_catalog/oko5qzyn1gb6zv5eqhqp.webp">
+        <div class="sugg-overlay">
+          <button class="sugg-btn-cart">
+            <i class="fa-solid fa-cart-plus"></i>
+          </button>
+        </div>
+      </div>
+      <div class="sugg-content">
+        <span class="sugg-tag">Consola</span>
+        <h3>GBA Micro Edition</h3>
+        <p class="sugg-price">$179.99</p>
+        <a href="#" class="sugg-btn-more">VER DETALLES</a>
+      </div>
+    </div>
+
+    <div class="sugg-card">
+      <div class="sugg-img">
+        <img src="https://res.cloudinary.com/dn8pns203/image/upload/v1777401905/geekwave_catalog/y2n5fcmmq3bcb5n4jotn.webp">
+        <div class="sugg-overlay">
+          <button class="sugg-btn-cart">
+            <i class="fa-solid fa-cart-plus"></i>
+          </button>
+        </div>
+      </div>
+      <div class="sugg-content">
+        <span class="sugg-tag">Hardware</span>
+        <h3>EverDrive GB X7</h3>
+        <p class="sugg-price">$129.00</p>
+        <a href="#" class="sugg-btn-more">VER DETALLES</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+<!-- ================= FOOTER ================= -->
+  <footer class="editorial-footer">
+        <div class="footer-block">
+            
+            <div class="footer-col brand-col">
+                <h2 class="footer-logo"><i data-lucide="circle"></i> GEEKWAVE.</h2>
+                <p class="footer-tagline">Restaurando la era dorada del gaming. Rediseñado para el futuro con ingeniería moderna.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Twitter"><i data-lucide="twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i data-lucide="instagram"></i></a>
+                    <a href="#" aria-label="YouTube"><i data-lucide="youtube"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-col links-col">
+                <span class="footer-label">Tienda</span>
+                <a href="productos.html">Consolas</a>
+                <a href="#">Cartuchos</a>
+                <a href="#">Modding & Piezas</a>
+                <a href="ofertas.html">Ofertas Especiales</a>
+            </div>
+
+            <div class="footer-col links-col">
+                <span class="footer-label">Soporte</span>
+                <a href="contacto.html">Contacto</a>
+                <a href="soporte.html">Centro de Ayuda</a>
+                <a href="#">Envíos y Devoluciones</a>
+                <a href="#">Términos de Servicio</a>
+            </div>
+
+            <div class="footer-col contact-col">
+                <span class="footer-label">GET IN TOUCH</span>
+                <a href="mailto:support@geekwave.com" class="footer-email">support@geekwave.com</a>
+                
+                <p class="footer-info">
+                    <strong>Sede Central:</strong> San Salvador, Colonia Escalón<br>
+                    <strong>Logística:</strong> Operaciones Globales 24/7, Antiguo Cuscatlán<br><br>
+                    <span class="copyright-text">© 2026 Geekwave Systems. All rights reserved.</span>
+                </p>
+
+                <button class="scroll-top" id="scrollTopBtn" title="Volver arriba">
+                    <i data-lucide="arrow-up"></i>
+                </button>
+            </div>
+
+        </div>
+    </footer>
+<script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+    
+    <script src="js/navbar-global.js"></script>
+    <script src="js/geekwave-main.js"></script>
+
+    <script src="js/productos.js"></script> 
+</body>
+</html>
