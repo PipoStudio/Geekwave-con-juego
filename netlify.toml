@@ -1,11 +1,11 @@
 [build]
-  # Instruimos a Netlify para que compile el juego automáticamente
+  # Esta línea es crucial para que Netlify compile tu juego
   command = "cd Game/keepYourSheep && npm install && npm run build"
-  publish = "."
+  # Indica a Netlify que busque los archivos finales aquí
+  publish = "Game/keepYourSheep/build"
   functions = "netlify/functions"
 
 [[redirects]]
   from = "/juego/*"
-  # Redirigimos a la carpeta "build", que es donde Webpack genera los archivos finales
-  to = "/Game/keepYourSheep/build/:splat"
+  to = "/:splat"
   status = 200
